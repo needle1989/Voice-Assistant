@@ -1,9 +1,7 @@
-from PyQt5 import QtWidgets, QtGui, QtCore, uic
 from PyQt5 import QtMultimedia
 from PyQt5.QtCore import QUrl
 import time
 import difflib
-import random
 import os
 
 from PyQt5.QtGui import QIcon
@@ -31,18 +29,16 @@ class myWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def cmd_recognition(self):
 
-        # 在定时器执行函数内部重复构造定时器
         global timer
         timer = threading.Timer(10, self.cmd_recognition)
         timer.start()
         print("She is waiting to be woken")
 
-        # Working with Microphones
         mic = sr.Microphone()
 
         with mic as source:
             r.adjust_for_ambient_noise(source)
-            audio = r.listen(source)  # 直到检测到静音时自动停止
+            audio = r.listen(source)
 
         try:
             command = r.recognize_sphinx(audio)
@@ -75,10 +71,6 @@ class myWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         global timer
         timer.cancel()
-        # self.label_7.setVisible(False)
-        # self.label_8.setVisible(False)
-        # self.label_10.setVisible(True)
-        # self.label_11.setVisible(True)
 
         mic = sr.Microphone()
         with mic as source:
@@ -95,8 +87,8 @@ class myWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                         string_similar(command, "note"),
                         string_similar(command, "calculate")]
 
-            max_value = max(cmd_list)  # 最大值
-            max_index = cmd_list.index(max_value)  # 最大值的索引
+            max_value = max(cmd_list)
+            max_index = cmd_list.index(max_value)
 
             if max_index == 0:
                 os.startfile(r"audio\music.mp3")
@@ -107,13 +99,8 @@ class myWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         print("Cooling down")
         time.sleep(6.1)
-
         self.label.setVisible(True)
         self.label_2.setVisible(False)
-        # self.label_7.setVisible(True)
-        # self.label_8.setVisible(True)
-        # self.label_10.setVisible(False)
-        # self.label_11.setVisible(False)
         timer = threading.Timer(0.1, self.cmd_recognition)
         timer.start()
 
@@ -123,7 +110,7 @@ if __name__ == '__main__':
     application = myWindow()
     application.show()
 
-    timer = threading.Timer(0.1, application.cmd_recognition)  # 第一次执行0.1s后开始
+    timer = threading.Timer(0.1, application.cmd_recognition)
     timer.start()
 
     sys.exit(app.exec_())
